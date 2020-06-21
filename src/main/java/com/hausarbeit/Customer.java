@@ -5,7 +5,7 @@ import java.util.*;
 public class Customer {
     private String custId;
     private List<Map> transactionsList;
-    private DataSource db = new DataSource(this);
+    private DataConnection db = new DataConnection(this);
 
     public Customer(String custId){
         this.custId = custId;
