@@ -12,9 +12,10 @@ just call a Get-Method with a valid Customer ID.
 The Service runs on Port 8083 - this can be customized in the <i> application.properties</i> file.
 
 ### GET-Methods
-* /Transactions?id=String
-* /TransactionsPerCategory?id=String
-* /Segment?id=String
+* /customer?id=String
+* /customer/transactions?id=String
+* /customer/transactionspercategory?id=String
+* /customer/segment?id=String
 
 ### Sample Responses:
 
