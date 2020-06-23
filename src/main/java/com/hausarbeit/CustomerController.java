@@ -4,19 +4,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicLong;
 
-@RestController //stereotype annotation - this lets spring know that it has to be considered,
-// when handling incomming web requests
+@RestController //stereotype annotation - this lets spring know that it has to be considered for http-get
 public class CustomerController {
-    private static final String template = "Customer: %s!";
-    private final AtomicLong counter = new AtomicLong();
-    // TODO: change DataSource to interact with a real db
-    @GetMapping("/Transactions") // Map Http-Get with the Transactions param
-    public Map transactions(@RequestParam(value = "id") String id){
+    @GetMapping("/customer/transactions")
+    public Map transactions(@RequestParam(value = "id") String id) throws SQLException {
         // Request: http://localhost:8080/Transactions?id=String
         Customer customer = new Customer(id);
         Map map = new HashMap<String, List>();
@@ -24,18 +21,18 @@ public class CustomerController {
         Map response = buildResponse(id,map);
         return response;
     }
-    @GetMapping("/TransactionsPerSegment")
-    // Request: http://localhost:8080/TransactionsPerSegment?id=String
-    public Map transactionsPerSegment(@RequestParam(value = "id") String id){
+    @GetMapping("/customer/transactionspercategory")
+    // Request: http://localhost:8080/TransactionsPerCategoryt?id=String
+    public Map transactionsPerCategory (@RequestParam(value = "id") String id) throws SQLException {
         Customer customer = new Customer(id);
         Map map = new HashMap<String, Map>();
-        map.put("TransactionsPerSegment", customer.getNumbTransactions());
+        map.put("transactionsPerCategory", customer.getTransactionsPerCategory());
         Map response = buildResponse(id,map);
         return response;
     }
-    @GetMapping("/Segment")
+    @GetMapping("/customer/segment")
     // Request: http://localhost:8080/Segment?id=String
-    public Map segment(@RequestParam(value = "id") String id){
+    public Map segment(@RequestParam(value = "id") String id)  throws SQLException {
         Customer customer = new Customer(id);
         Map map = new HashMap<String, String>();
         map.put("segment", customer.getSegment());
@@ -43,10 +40,30 @@ public class CustomerController {
         return response;
     }
 
-    public Map buildResponse(String id, Map value){
+    @GetMapping("/customer")
+    // Request: http://localhost:8080/All?id=String
+    public List allData(@RequestParam(value = "id") String id)  throws SQLException{
+        Customer customer = new Customer(id);
+        ArrayList<Map> responseList = new ArrayList<>();
+        // add transactions
+        Map tranactions = new HashMap<String, List>();
+        tranactions.put("transactions",customer.getTransactions());
+        responseList.add(buildResponse(customer.getId(), tranactions));
+        // add transactions per Category
+        Map tranactionsPerCategory = new HashMap<String, Map>();
+        tranactionsPerCategory.put("transactionsPerCategory", customer.getTransactionsPerCategory());
+        responseList.add(buildResponse(customer.getId(), tranactionsPerCategory));
+        // ad segment
+        Map segment = new HashMap<String, String>();
+        segment.put("segment", customer.getSegment());
+        responseList.add(buildResponse(customer.getId(), segment));
+        return responseList;
+    }
+
+    private Map buildResponse(String id, Map value){
+        // builds a response map in a unified matter
         Map identity = new HashMap<String, String>();
         identity.put("id",id);
-
         Map response = new HashMap<String, Map>();
         response.put("customer",identity);
         response.put("values",value);

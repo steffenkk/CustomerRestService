@@ -1,33 +1,52 @@
 package com.hausarbeit;
 
+import java.sql.SQLException;
 import java.util.*;
 
 public class Customer {
     private String custId;
     private List<Map> transactionsList;
-    private DataConnection db = new DataConnection(this);
+    private Map<String, Integer> transactionsPerCategory;
+    private DataConnection db;
+    private String segment;
+
 
     public Customer(String custId){
         this.custId = custId;
         this.transactionsList = new ArrayList<Map>();
+        this.transactionsPerCategory = new HashMap<String, Integer>();
+        this.db = new DataConnection(this);
+        this.segment = null;
     }
-    void setTransactions(String date, String item, String revenue, String quantity,
-                         String discountValue, String discountType, String returnYesNo, String channel){
+
+    public void setTransactions(String orderid, String date, String category, String subcategory, String revenue,
+                         String quantity, String profit){
         // safe transaction details in a map which will be stored in a list
-        // this method will be called from the datasource
-        Map<String, String> transactions = new HashMap<String, String>();
+        // this method will be called from the DataConnection
+        Map<String, String> transactions = new HashMap<>();
+        transactions.put("orderid", orderid);
         transactions.put("date", date);
-        transactions.put("item", item);
+        transactions.put("category", category);
+        transactions.put("subcategory", subcategory);
         transactions.put("revenue", revenue);
         transactions.put("quantity", quantity);
-        transactions.put("discountValue", discountValue);
-        transactions.put("discountType", discountType);
-        transactions.put("return", returnYesNo);
-        transactions.put("channel", channel);
+        transactions.put("profit", profit);
         transactionsList.add(transactions);
     }
 
-    List getTransactions(){
+    public void setTransactionsPerCategory(String category, Integer frequency){
+        transactionsPerCategory.put(category, frequency);
+    }
+
+    public void setSegment(String segment){
+        this.segment = segment;
+    }
+
+    public String getId(){
+        return this.custId;
+    }
+
+    public List getTransactions() throws SQLException {
         // check if transactions are present, if not set them and return
         if (transactionsList.size() == 0) {
             db.queryTransactions();
@@ -35,27 +54,18 @@ public class Customer {
        return transactionsList;
     }
 
-    Map getNumbTransactions(){
-        if (transactionsList.size() == 0) {
-            db.queryTransactions();
+    public Map getTransactionsPerCategory() throws SQLException {
+        if (transactionsPerCategory.size() == 0) {
+            db.queryTransactionsPerCategory();
         }
-        Map<String, Integer> numbTransactions = new HashMap<String, Integer>();
-        for (Map transaction: transactionsList ) {
-            String item = (String) transaction.get("item");
-            // check first if the item of the transaction is already in the numbTransactions Map
-            if (numbTransactions.containsKey(item)){
-                Integer qty = (Integer) numbTransactions.get(item) + 1;
-                numbTransactions.put(item, qty);
-            } else {
-                numbTransactions.put((String) transaction.get("item"),1);
-            }
-        }
-        return numbTransactions;
+        return transactionsPerCategory;
     }
 
-    String getSegment(){
-        // call datasource
-        String segment = db.querySegment();
+    public String getSegment() throws SQLException {
+        // call datasource for segment
+        if (segment == null) {
+            db.querySegment();
+        }
         return segment;
     }
 

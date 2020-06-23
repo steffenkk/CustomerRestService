@@ -9,11 +9,11 @@ The RestService provides a convinient, programmatical Method to
 retrieve Cusomter Information from the Datawarehouse. To use it,
 just call a Get-Method with a valid Customer ID.
 
-The Service runs on Port 8083 - <i>this can be customized in the application.properties file</i>.
+The Service runs on Port 8083 - this can be customized in the <i> application.properties</i> file.
 
 ### GET-Methods
 * /Transactions?id=String
-* /TransactionsPerSegment?id=String
+* /TransactionsPerCategory?id=String
 * /Segment?id=String
 
 ### Sample Responses:
