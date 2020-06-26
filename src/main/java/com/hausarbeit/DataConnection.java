@@ -1,14 +1,9 @@
 package com.hausarbeit;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.sql.DataSource;
+
 import javax.sql.rowset.CachedRowSet;
 import javax.sql.rowset.RowSetProvider;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class DataConnection {
     private final Customer CUSTOMER;
@@ -62,19 +57,16 @@ public class DataConnection {
     private CachedRowSet executeQuery(String sqlQuery, String id) {
         Connection con = null;
         CachedRowSet crset = null;
-        // TODO: ADD ENV DB_PW
+        // TODO: ADD ENV DB_PW TO CONTAINER
         String password = System.getenv("DB_PW");
         try {
-            // con = DriverManager.getConnection("jdbc:postgresql://localhost:5432/test1", "postgres", password);
-            InitialContext initialContext = new InitialContext();
-            DataSource datasource = (DataSource) initialContext.lookup("java:comp/env/jdbc/postgres"); //use JNDI
-            con = datasource.getConnection();
+            con = DriverManager.getConnection("jdbc:postgresql://localhost:5432/test1", "postgres", password);
             PreparedStatement prepStmt = con.prepareStatement(sqlQuery); // prepStatement object for prepared queries
             prepStmt.setString(1, (String) id); // update with the id string (replaces a ?)
             ResultSet rs = prepStmt.executeQuery();
             crset = RowSetProvider.newFactory().createCachedRowSet();
             crset.populate(rs); // store data in the cached-rs to scroll through it without an conn
-        } catch (SQLException | NamingException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             if (con != null)
