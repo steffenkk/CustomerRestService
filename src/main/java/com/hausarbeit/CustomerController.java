@@ -1,11 +1,12 @@
 package com.hausarbeit;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +15,7 @@ import java.util.Map;
 public class CustomerController {
     @GetMapping("/customer/transactions")
     public Map transactions(@RequestParam(value = "id") String id) throws SQLException {
-        // Request: http://localhost:8080/Transactions?id=String
+        // Request: http://localhost:8083//customer/transactions?id=String
         Customer customer = new Customer(id);
         Map map = new HashMap<String, List>();
         map.put("transactions",customer.getTransactions());
@@ -22,7 +23,7 @@ public class CustomerController {
         return response;
     }
     @GetMapping("/customer/transactionspercategory")
-    // Request: http://localhost:8080/TransactionsPerCategoryt?id=String
+    // Request: http://localhost:8083/customer/ransactionspervategoryt?id=String
     public Map transactionsPerCategory (@RequestParam(value = "id") String id) throws SQLException {
         Customer customer = new Customer(id);
         Map map = new HashMap<String, Map>();
@@ -31,7 +32,7 @@ public class CustomerController {
         return response;
     }
     @GetMapping("/customer/segment")
-    // Request: http://localhost:8080/Segment?id=String
+    // Request: http://localhost:8083//customer/segment?id=String
     public Map segment(@RequestParam(value = "id") String id)  throws SQLException {
         Customer customer = new Customer(id);
         Map map = new HashMap<String, String>();
@@ -41,23 +42,16 @@ public class CustomerController {
     }
 
     @GetMapping("/customer")
-    // Request: http://localhost:8080/All?id=String
-    public List allData(@RequestParam(value = "id") String id)  throws SQLException{
+    // Request: http://localhost:8083/customer?id=String
+    public ResponseEntity<Customer> allData(@RequestParam(value = "id") String id)  throws SQLException{
         Customer customer = new Customer(id);
-        ArrayList<Map> responseList = new ArrayList<>();
         // add transactions
-        Map tranactions = new HashMap<String, List>();
-        tranactions.put("transactions",customer.getTransactions());
-        responseList.add(buildResponse(customer.getId(), tranactions));
+        customer.getTransactions();
         // add transactions per Category
-        Map tranactionsPerCategory = new HashMap<String, Map>();
-        tranactionsPerCategory.put("transactionsPerCategory", customer.getTransactionsPerCategory());
-        responseList.add(buildResponse(customer.getId(), tranactionsPerCategory));
+        customer.getTransactionsPerCategory();
         // ad segment
-        Map segment = new HashMap<String, String>();
-        segment.put("segment", customer.getSegment());
-        responseList.add(buildResponse(customer.getId(), segment));
-        return responseList;
+        customer.getSegment();
+        return new ResponseEntity<Customer>(customer, HttpStatus.OK);
     }
 
     private Map buildResponse(String id, Map value){
