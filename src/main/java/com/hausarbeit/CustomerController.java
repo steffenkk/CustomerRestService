@@ -11,19 +11,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@RestController //stereotype annotation - this lets spring know that it has to be considered for http-get
+@RestController
 public class CustomerController {
-    @GetMapping("/customer/transactions")
+    @GetMapping("/customers/transactions")
     public Map transactions(@RequestParam(value = "id") String id) throws SQLException {
-        // Request: http://localhost:8083//customer/transactions?id=String
+        // Request: http://localhost:8083/customers/transactions?id=String
         Customer customer = new Customer(id);
         Map map = new HashMap<String, List>();
         map.put("transactions",customer.getTransactions());
         Map response = buildResponse(id,map);
         return response;
     }
-    @GetMapping("/customer/transactionspercategory")
-    // Request: http://localhost:8083/customer/ransactionspervategoryt?id=String
+    @GetMapping("/customers/transactionspercategory")
+    // Request: http://localhost:8083/customers/transactionspercategory?id=String
     public Map transactionsPerCategory (@RequestParam(value = "id") String id) throws SQLException {
         Customer customer = new Customer(id);
         Map map = new HashMap<String, Map>();
@@ -31,8 +31,8 @@ public class CustomerController {
         Map response = buildResponse(id,map);
         return response;
     }
-    @GetMapping("/customer/segment")
-    // Request: http://localhost:8083//customer/segment?id=String
+    @GetMapping("/customers/segment")
+    // Request: http://localhost:8083/customers/segment?id=String
     public Map segment(@RequestParam(value = "id") String id)  throws SQLException {
         Customer customer = new Customer(id);
         Map map = new HashMap<String, String>();
@@ -41,21 +41,17 @@ public class CustomerController {
         return response;
     }
 
-    @GetMapping("/customer")
-    // Request: http://localhost:8083/customer?id=String
+    @GetMapping("/customers")
+    // Request: http://localhost:8083/customers?id=String
     public ResponseEntity<Customer> allData(@RequestParam(value = "id") String id)  throws SQLException{
         Customer customer = new Customer(id);
-        // add transactions
         customer.getTransactions();
-        // add transactions per Category
         customer.getTransactionsPerCategory();
-        // ad segment
         customer.getSegment();
         return new ResponseEntity<Customer>(customer, HttpStatus.OK);
     }
 
     private Map buildResponse(String id, Map value){
-        // builds a response map in a unified matter
         Map identity = new HashMap<String, String>();
         identity.put("id",id);
         Map response = new HashMap<String, Map>();

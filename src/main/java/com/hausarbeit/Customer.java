@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.*;
 
 public class Customer {
+    // TODO: make an order an own object - and here an list of orders
     private String custId;
     private List<Map> transactionsList;
     private Map<String, Integer> transactionsPerCategory;
@@ -21,8 +22,6 @@ public class Customer {
 
     public void setTransactions(String orderid, String date, String category, String subcategory, String revenue,
                          String quantity, String profit){
-        // safe transaction details in a map which will be stored in a list
-        // this method will be called from the DataConnection
         Map<String, String> transactions = new HashMap<>();
         transactions.put("orderid", orderid);
         transactions.put("date", date);
@@ -47,7 +46,6 @@ public class Customer {
     }
 
     public List getTransactions() throws SQLException {
-        // check if transactions are present, if not set them and return
         if (transactionsList.size() == 0) {
             db.queryTransactions();
         }
@@ -62,7 +60,6 @@ public class Customer {
     }
 
     public String getSegment() throws SQLException {
-        // call datasource for segment
         if (segment == null) {
             db.querySegment();
         }

@@ -1,11 +1,12 @@
 package com.hausarbeit;
 
-
 import javax.sql.rowset.CachedRowSet;
 import javax.sql.rowset.RowSetProvider;
 import java.sql.*;
 
 public class DataConnection {
+    // TODO: should the class be static or should the Customer not be static?
+    // TODO: remenber to store the db PW in the env
     private final Customer CUSTOMER;
 
     DataConnection(Customer CUSTOMER){
@@ -44,7 +45,7 @@ public class DataConnection {
     }
 
     public void queryTransactionsPerCategory() throws SQLException{
-        // query db for Transactions per Category
+        // query database for the queryTransactionsPerCategory and call setTransactionsPerCategory for the specific CUSTOMER
         CachedRowSet result = executeQuery("select category, count(DISTINCT t1.orderid) as numbOrders from " +
                         "order_details t1 inner join orders_list t2 ON t1.orderid = t2.orderid where t2.customerid = " +
                         "? group by 1;", CUSTOMER.getId());
@@ -57,15 +58,14 @@ public class DataConnection {
     private CachedRowSet executeQuery(String sqlQuery, String id) {
         Connection con = null;
         CachedRowSet crset = null;
-        // TODO: ADD ENV DB_PW TO CONTAINER
         String password = System.getenv("DB_PW");
         try {
             con = DriverManager.getConnection("jdbc:postgresql://localhost:5432/test1", "postgres", password);
-            PreparedStatement prepStmt = con.prepareStatement(sqlQuery); // prepStatement object for prepared queries
-            prepStmt.setString(1, (String) id); // update with the id string (replaces a ?)
+            PreparedStatement prepStmt = con.prepareStatement(sqlQuery);
+            prepStmt.setString(1, (String) id);
             ResultSet rs = prepStmt.executeQuery();
             crset = RowSetProvider.newFactory().createCachedRowSet();
-            crset.populate(rs); // store data in the cached-rs to scroll through it without an conn
+            crset.populate(rs);
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
