@@ -1,5 +1,5 @@
 # CustomerRestService
-A RESTful Webservice, made with springframework, to work as an information provider for CUSTOMER data from a DWH. 
+A RESTful Webservice, made with springframework, to work as an information provider for customer data from a DWH. 
 
 ### Getting Started
 TODO: Add Information

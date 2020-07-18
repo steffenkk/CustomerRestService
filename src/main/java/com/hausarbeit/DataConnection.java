@@ -58,9 +58,9 @@ public class DataConnection {
     private CachedRowSet executeQuery(String sqlQuery, String id) {
         Connection con = null;
         CachedRowSet crset = null;
-        String password = System.getenv("POSTGRES_PASSWORD");
+        String password = "postgres";
         try {
-            con = DriverManager.getConnection("jdbc:postgresql://localhost:5432/test1", "postgres", password);
+            con = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", password);
             PreparedStatement prepStmt = con.prepareStatement(sqlQuery);
             prepStmt.setString(1, (String) id);
             ResultSet rs = prepStmt.executeQuery();
