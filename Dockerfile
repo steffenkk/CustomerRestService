@@ -1,14 +1,11 @@
 FROM postgres 
 
-# create dir
+# create dir for the jvm
 RUN mkdir /usr/lib/jvm
 
-# setting neccessary env variables
+# setting neccessary env variables for postgres
 ENV POSTGRES_PASSWORD postgres 
 ENV POSTGRES_DB test1
-
-# set a working directory
-# WORKDIR /usr/src/app
 
 # copying files 
 COPY ./resources/init.sql /docker-entrypoint-initdb.d/
@@ -17,14 +14,12 @@ COPY ./resources/postgresql-42.2.14.jar /opt/driver/
 COPY ./resources/jdk-14.0.1_linux-x64_bin.tar.gz /usr/lib/jvm
 
 
-# database are possible.
-RUN echo "host all  all    0.0.0.0/0  md5" >> /usr/share/postgresql/pg_hba.conf &&
-
-# And add ``listen_addresses`` 
-RUN echo "listen_addresses='*'" >> /usr/share/postgresql/postgresql.conf
+# And add config to postgres that enables DB Access for the app
+RUN echo "host all  all    0.0.0.0/0  md5" >> /usr/share/postgresql/pg_hba.conf && \
+    echo "listen_addresses='*'" >> /usr/share/postgresql/postgresql.conf
 
 
-# install java
+# install JDK 14
 RUN tar -xvzf /usr/lib/jvm/jdk-14.0.1_linux-x64_bin.tar.gz -C /usr/lib/jvm/
 ENV JAVA_HOME=/usr/lib/jvm/jdk-14.0.1
 RUN export PATH=$PATH:$JAVA_HOME/bin:$JAVA_HOME/db/bin:$JAVA_HOME/jre/bin
@@ -37,13 +32,14 @@ RUN update-alternatives --install "/usr/bin/java" "java" "/usr/lib/jvm/jdk-14.0.
     update-alternatives --set java /usr/lib/jvm/jdk-14.0.1/bin/java  && \
     update-alternatives --set javac /usr/lib/jvm/jdk-14.0.1/bin/javac
 
-# config class path to contain the jdbc jar
+# config class path to contain the jdbc driver
 ENV CLASSPATH=/opt/driver/postgresql-42.2.14.jar
 RUN export CLASSPATH
 
 # define the port number the container should expose
 EXPOSE 8083 5432
 
+# copy the wrapper script into the container
 COPY ./resources/all_cmds.sh ./
 
 # start the service

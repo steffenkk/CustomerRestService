@@ -4,6 +4,12 @@ A RESTful Webservice, made with springframework, to work as an information provi
 ### Getting Started
 TODO: Add Information
 
+### Architecture
+
+#### UML Class Diagram
+
+![Alt text](./customer.png?raw=true "Class Diagram")
+
 ### General
 The RestService provides a convinient, programmatical Method to
 retrieve Cusomter Information from the Datawarehouse. To use it,
@@ -20,3 +26,4 @@ The Service runs on Port 8083 - this can be customized in the <i> application.pr
 ### Sample Responses:
 
 TODO: add Json here
+

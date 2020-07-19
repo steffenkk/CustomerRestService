@@ -6,7 +6,6 @@ import java.sql.*;
 
 public class DataConnection {
     // TODO: should the class be static or should the Customer not be static?
-    // TODO: remenber to store the db PW in the env
     private final Customer customer;
 
     DataConnection(Customer customer){
