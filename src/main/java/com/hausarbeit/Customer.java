@@ -1,36 +1,27 @@
 package com.hausarbeit;
 
+import org.springframework.http.ResponseEntity;
+
 import java.sql.SQLException;
 import java.util.*;
 
 public class Customer {
-    // TODO: make an order an own object - and here an list of orders
     private String custId;
-    private List<Map> transactionsList;
+    private List<Order> transactionsList;
     private Map<String, Integer> transactionsPerCategory;
     private DataConnection db;
     private String segment;
 
-
     public Customer(String custId){
         this.custId = custId;
-        this.transactionsList = new ArrayList<Map>();
+        this.transactionsList = new ArrayList<Order>();
         this.transactionsPerCategory = new HashMap<String, Integer>();
         this.db = new DataConnection(this);
         this.segment = null;
     }
 
-    public void setTransactions(String orderid, String date, String category, String subcategory, String revenue,
-                         String quantity, String profit){
-        Map<String, String> transactions = new HashMap<>();
-        transactions.put("orderid", orderid);
-        transactions.put("date", date);
-        transactions.put("category", category);
-        transactions.put("subcategory", subcategory);
-        transactions.put("revenue", revenue);
-        transactions.put("quantity", quantity);
-        transactions.put("profit", profit);
-        transactionsList.add(transactions);
+    public void setTransactions(Order order){
+        transactionsList.add(order);
     }
 
     public void setTransactionsPerCategory(String category, Integer frequency){

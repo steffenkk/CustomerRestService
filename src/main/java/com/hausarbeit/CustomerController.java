@@ -14,13 +14,13 @@ import java.util.Map;
 @RestController
 public class CustomerController {
     @GetMapping("/customers/transactions")
+    // Request: http://localhost:8083/customers/transactions?id=String
     public Map transactions(@RequestParam(value = "id") String id) throws SQLException {
-        // Request: http://localhost:8083/customers/transactions?id=String
         Customer customer = new Customer(id);
         Map map = new HashMap<String, List>();
         map.put("transactions",customer.getTransactions());
         Map response = buildResponse(id,map);
-        return response;
+        return response ;
     }
     @GetMapping("/customers/transactionspercategory")
     // Request: http://localhost:8083/customers/transactionspercategory?id=String
@@ -44,10 +44,8 @@ public class CustomerController {
     @GetMapping("/customers")
     // Request: http://localhost:8083/customers?id=String
     public ResponseEntity<Customer> allData(@RequestParam(value = "id") String id)  throws SQLException{
+        // no need to run the getters manually, this will be done by the framework
         Customer customer = new Customer(id);
-        customer.getTransactions();
-        customer.getTransactionsPerCategory();
-        customer.getSegment();
         return new ResponseEntity<Customer>(customer, HttpStatus.OK);
     }
 

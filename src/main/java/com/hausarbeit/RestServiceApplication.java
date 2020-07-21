@@ -10,6 +10,8 @@ public class RestServiceApplication {
         new SpringApplicationBuilder()
                 .sources(RestServiceApplication.class)
                 .run(args);
+
     }
+
 }
 
