@@ -2,7 +2,8 @@
 A RESTful Webservice, made with springframework, to work as an information provider for customer data from a DWH. 
 
 ### Getting Started
-TODO: Add Information
+
+* Docker: `docker run -p 8083:8083 steffenkk/restservice`
 
 ### Architecture
 

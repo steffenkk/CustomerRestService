@@ -7,7 +7,7 @@ import java.util.*;
 
 public class Customer {
     private String custId;
-    private List<Order> transactionsList;
+    private ArrayList<Order> transactionsList;
     private Map<String, Integer> transactionsPerCategory;
     private DataConnection db;
     private String segment;
